@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+message Bar{
+    string market = 1;
+    string code = 2;
+    float open=3;
+    float close=4;
+    float high=5;
+    float low=6;
+    float vol=7;
+    float amount=8;
+    string timestamp=9;
+}
