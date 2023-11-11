@@ -57,14 +57,17 @@ import akshare as ak
 
 # stock_list = ak.stock_info_a_code_name()
 # stock_list = ak.stock_info_sh_delist()
-# stock_list = ak.stock_info_sh_name_code()
-# print(stock_list)
+stock_list = ak.stock_info_sh_name_code()
+print(stock_list)
+print(len(stock_list))
 
 # stock_szse_summary_df = ak.stock_szse_summary(date="20231109")
 # print(stock_szse_summary_df)
 
-stock_sse_summary_df = ak.stock_sse_summary()
-print(stock_sse_summary_df)
+# stock_sse_summary_df = ak.stock_sse_summary()
+# print(stock_sse_summary_df)
 
-stock_szse_summary_df = ak.stock_szse_summary()
-print(stock_szse_summary_df)
+# stock_szse_summary_df = ak.stock_szse_summary()
+# print(stock_szse_summary_df)
+
+# hist = ak.stock_zh_a
