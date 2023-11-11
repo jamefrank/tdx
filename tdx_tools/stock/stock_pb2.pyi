@@ -15,14 +15,20 @@ class Stock(google.protobuf.message.Message):
     CODE_FIELD_NUMBER: builtins.int
     NAME_FIELD_NUMBER: builtins.int
     MARKET_FIELD_NUMBER: builtins.int
+    FULL_NAME_FIELD_NUMBER: builtins.int
+    BIRTH_DATE_FIELD_NUMBER: builtins.int
     code: typing.Text
     name: typing.Text
     market: typing.Text
+    full_name: typing.Text
+    birth_date: typing.Text
     def __init__(self,
         *,
         code: typing.Text = ...,
         name: typing.Text = ...,
         market: typing.Text = ...,
+        full_name: typing.Text = ...,
+        birth_date: typing.Text = ...,
         ) -> None: ...
-    def ClearField(self, field_name: typing_extensions.Literal["code",b"code","market",b"market","name",b"name"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["birth_date",b"birth_date","code",b"code","full_name",b"full_name","market",b"market","name",b"name"]) -> None: ...
 global___Stock = Stock

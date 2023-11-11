@@ -4,3 +4,5 @@
 # @Author  :   frank
 # @Email:
 # @Description: 从第三方库获取股票列表的信息，并更新到数据库
+
+import akshare as ak

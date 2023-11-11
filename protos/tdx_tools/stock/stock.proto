@@ -4,4 +4,6 @@ message Stock{
     string code = 1;
     string name = 2;
     string market = 3;
+    string full_name = 4;
+    string birth_date = 5;
 }
