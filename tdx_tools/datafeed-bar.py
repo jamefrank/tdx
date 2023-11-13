@@ -43,6 +43,10 @@ def get_stock_bar_daily():
 
     #
     current_unix_stamp = datetime.datetime.now().timestamp()
+    cnt = 0
+    while trade_date[cnt] < current_unix_stamp:
+        cnt += 1
+    latest_data_date = trade_date[cnt-1]
 
     #
     adjusts = ["qfq", "hfq", ""]
