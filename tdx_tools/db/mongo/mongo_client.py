@@ -15,6 +15,7 @@ from urllib import request
 
 from tdx_tools.db.mongo.mongo_info import MongoDbInfo
 from tdx_tools.protos.stock_pb2 import Stock
+from tdx_tools.protos.bar_pb2 import Bar
 
 import pymongo
 from pymongo import ReplaceOne
@@ -26,6 +27,8 @@ from typing import Dict, List
 
 from google.protobuf.message import Message
 from google.protobuf.json_format import ParseDict, MessageToDict
+
+import datetime
 
 
 class MongoClient:
@@ -44,6 +47,7 @@ class MongoClient:
         collection = "list"
         col = self.__get_collection(database, collection)
         cursor = col.find()
+        cursor = cursor.sort("code", pymongo.ASCENDING)
         stocks = []
         for doc in cursor:
             stocks.append(self.__doc_to_stock(doc))
@@ -81,6 +85,78 @@ class MongoClient:
         col = self.__get_collection(database, collection)
         col.drop()
 
+    def write_bars(self, bars: List[Bar]) -> BulkWriteResult:
+        """存储某只股票的历史数据到数据库
+
+        Args:
+            bars (List[Bar]): 股票的历史数据
+
+        Returns:
+            BulkWriteResult: 写入是否成功
+        """
+        if not bars:
+            return None
+        requests = []
+        for bar in bars:
+            doc = self.__bar_to_doc(bar)
+            request = ReplaceOne(
+                filter={'_id': doc['_id']},
+                replacement=doc,
+                upsert=True
+            )
+            requests.append(request)
+
+        database = "stock"
+        collection = "bar"
+        col = self.__get_collection(database, collection)
+        result = col.bulk_write(requests)
+        print(f"Written {len(requests)} bars, matched {result.matched_count}, "f"modified {result.modified_count}.")
+        return result
+
+    def find_bars(
+            self,
+            code: str,
+            adjust: Optional[str] = "qfq",
+            start_date: Optional[datetime.datetime] = datetime.datetime(
+                year=1990,
+                month=12,
+                day=19,
+                hour=0,
+                minute=0,
+                second=0)) -> List[Bar]:
+        database = "stock"
+        collection = "bar"
+        col = self.__get_collection(database, collection)
+        unix_timestamp = int(start_date.timestamp())
+        query = {
+            "$and":
+            [
+                {"code": code},
+                {"adjust": adjust},
+                {"timestamp": {"$gte": unix_timestamp}}
+            ]
+        }
+        cursor = col.find(query)
+        bars = []
+        for doc in cursor:
+            bars.append(self.__doc_to_bar(doc))
+        return bars
+
+    def delete_bars(self):
+        database = "stock"
+        collection = "bar"
+        col = self.__get_collection(database, collection)
+        col.drop()
+
+    def find_bar_update_time(
+            self,
+            code: str,
+            adjust: Optional[str] = "qfq") -> float:
+        database = "stock"
+        collection = "bar"
+        col = self.__get_collection(database, collection)
+        return col.find().sort({"timestamp": pymongo.DESCENDING}).limit(1)[0]["timestamp"]
+
     def __get_collection(
         self,
         database: str,
@@ -109,7 +185,20 @@ class MongoClient:
         doc['_id'] = stock.market + stock.code
         return doc
 
+    def __bar_to_doc(self, bar: Bar) -> Dict:
+        doc = self.__message_to_doc(bar)
+        doc['_id'] = bar.market+bar.code+":"+str(bar.timestamp)+":"+bar.adjust
+        return doc
+
+    def __doc_to_bar(self, doc: Dict) -> Bar:
+        _id = doc.pop('_id')
+        try:
+            return self.__doc_to_message(doc, Bar)
+        except Exception as e:
+            raise ValueError(f"Failed to parse doc {_id}: {e}")
+
 
 if __name__ == '__main__':
     client = MongoClient()
-    client.delete_stocks()
+    # client.delete_stocks()
+    client.delete_bars()

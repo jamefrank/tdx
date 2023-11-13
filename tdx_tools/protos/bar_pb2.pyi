@@ -21,6 +21,7 @@ class Bar(google.protobuf.message.Message):
     VOL_FIELD_NUMBER: builtins.int
     AMOUNT_FIELD_NUMBER: builtins.int
     TIMESTAMP_FIELD_NUMBER: builtins.int
+    ADJUST_FIELD_NUMBER: builtins.int
     market: typing.Text
     code: typing.Text
     open: builtins.float
@@ -29,7 +30,8 @@ class Bar(google.protobuf.message.Message):
     low: builtins.float
     vol: builtins.float
     amount: builtins.float
-    timestamp: typing.Text
+    timestamp: builtins.float
+    adjust: typing.Text
     def __init__(self,
         *,
         market: typing.Text = ...,
@@ -40,7 +42,8 @@ class Bar(google.protobuf.message.Message):
         low: builtins.float = ...,
         vol: builtins.float = ...,
         amount: builtins.float = ...,
-        timestamp: typing.Text = ...,
+        timestamp: builtins.float = ...,
+        adjust: typing.Text = ...,
         ) -> None: ...
-    def ClearField(self, field_name: typing_extensions.Literal["amount",b"amount","close",b"close","code",b"code","high",b"high","low",b"low","market",b"market","open",b"open","timestamp",b"timestamp","vol",b"vol"]) -> None: ...
+    def ClearField(self, field_name: typing_extensions.Literal["adjust",b"adjust","amount",b"amount","close",b"close","code",b"code","high",b"high","low",b"low","market",b"market","open",b"open","timestamp",b"timestamp","vol",b"vol"]) -> None: ...
 global___Bar = Bar

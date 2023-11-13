@@ -57,9 +57,13 @@ import akshare as ak
 
 # stock_list = ak.stock_info_a_code_name()
 # stock_list = ak.stock_info_sh_delist()
-stock_list = ak.stock_info_sh_name_code()
-print(stock_list)
-print(len(stock_list))
+# stock_list = ak.stock_info_sh_name_code()
+# print(stock_list)
+# print(len(stock_list))
+
+stock_zh_a_hist_df = ak.stock_zh_a_hist(symbol="002624", period="daily", start_date="20230904", end_date='20230907',
+                                        adjust="qfq")
+print(stock_zh_a_hist_df)
 
 # stock_szse_summary_df = ak.stock_szse_summary(date="20231109")
 # print(stock_szse_summary_df)
