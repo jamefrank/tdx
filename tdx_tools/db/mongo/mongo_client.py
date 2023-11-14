@@ -155,7 +155,20 @@ class MongoClient:
         database = "stock"
         collection = "bar"
         col = self.__get_collection(database, collection)
-        return col.find().sort({"timestamp": pymongo.DESCENDING}).limit(1)[0]["timestamp"]
+        query = {
+            "$and":
+            [
+                {"code": code},
+                {"adjust": adjust},
+            ]
+        }
+
+        count = col.count_documents(query)
+        if count == 0:
+            update_time = 661536000.0
+        else:
+            update_time = col.find(query).sort({"timestamp": pymongo.DESCENDING}).limit(1)[0]["timestamp"]
+        return update_time
 
     def __get_collection(
         self,
