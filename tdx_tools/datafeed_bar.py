@@ -42,18 +42,17 @@ def process_bar_daily(args, adjusts: List, latest_data_date: float, trade_date: 
 
     trade_date_end = trade_date[-1]
     for adjust in adjusts:
+        #
+        update_ts = client.find_bar_update_time(code, adjust)
+        if update_ts >= latest_data_date:
+            break
+        #
+        cnt = 0
+        while trade_date[cnt] < update_ts:
+            cnt += 1
+        trade_date_start = unix_timestamp_to_str(trade_date[cnt])
         while True:
             try:
-                #
-                update_ts = client.find_bar_update_time(code, adjust)
-                if update_ts >= latest_data_date:
-                    break
-                #
-                cnt = 0
-                while trade_date[cnt] < update_ts:
-                    cnt += 1
-                trade_date_start = unix_timestamp_to_str(trade_date[cnt])
-
                 bar_df = ak.stock_zh_a_hist(
                     symbol=code,
                     period=period,
@@ -91,9 +90,9 @@ def process_bar_daily(args, adjusts: List, latest_data_date: float, trade_date: 
 def get_stock_bar_daily():
 
     ENABLE_MULTIPLE = True
-    # ENABLE_MULTIPLE = False
+    ENABLE_MULTIPLE = False
 
-    NUM_PROCESS = 8
+    NUM_PROCESS = 24
 
     #
     trade_date_hist = ak.tool_trade_date_hist_sina()
@@ -137,8 +136,9 @@ def get_stock_bar_daily():
             #
             progress_bar.close()
     else:
-        for idx in tqdm(range(len(iterable_args))):
-            partial_process_bar_daily(iterable_args[idx])
+        for iter in tqdm(iterable_args, total=len(code_list)):
+            partial_process_bar_daily(iter)
+            break
 
 
 if __name__ == '__main__':

@@ -6,4 +6,5 @@ message Stock{
     string market = 3;
     string full_name = 4;
     string birth_date = 5;
+    float update_stamp = 6; //更新数据的日期
 }
