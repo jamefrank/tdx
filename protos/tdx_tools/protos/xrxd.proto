@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+message XRXD{
+    string code = 1;
+    string name = 2;
+    string market = 3;
+    string date = 4;//除权除息日
+}
