@@ -170,6 +170,39 @@ class MongoClient:
             update_time = col.find(query).sort({"timestamp": pymongo.DESCENDING}).limit(1)[0]["timestamp"]
         return update_time
 
+    def find_bar_update_time_patch(self):
+        """使用聚合查询，批量查询更新时间
+        """
+        database = "stock"
+        collection = "bar"
+        col = self.__get_collection(database, collection)
+        # 创建聚合管道
+        pipeline = [
+            {
+                "$group": {
+                    "_id": {"code": "$code", "adjust": "$adjust", "market": "$market"},
+                    "maxStamp": {"$max": "$timestamp"}
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "code": "$_id.code",
+                    "adjust": "$_id.adjust",
+                    "market": "$_id.market",
+                    "maxStamp": 1
+                }
+            }
+        ]
+
+        # 创建索引
+        # col.drop_index([("code", 1), ("adjust", 1)])
+        col.create_index([("code", 1), ("adjust", 1), ("market", 1)])
+
+        # 执行聚合查询
+        result = col.aggregate(pipeline)
+        return result
+
     def __get_collection(
         self,
         database: str,
