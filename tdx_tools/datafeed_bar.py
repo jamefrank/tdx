@@ -105,6 +105,17 @@ def get_stock_bar_daily():
 
     #
     client = MongoClient()
+
+    #
+    current_datetime = datetime.datetime.now()
+    current_unix_stamp = datetime.datetime.now().timestamp()
+
+    #
+    xrxds = client.find_xrxd_stocks()
+    xrxd_code_list = [stock.code for stock in xrxds]
+    xrxd_ts_list = [stock.date_ts for stock in xrxds]
+
+    #
     stocks = client.find_stocks()
     code_list = [stock.code for stock in stocks]
     market_list = [stock.market for stock in stocks]
@@ -117,7 +128,6 @@ def get_stock_bar_daily():
     trade_date = [datetime.datetime.combine(date, datetime.datetime.min.time()).timestamp() for date in trade_date_hist[trade_date_str]]
     start_date = trade_date[0]
     #
-    current_unix_stamp = datetime.datetime.now().timestamp()
     cnt = 0
     while trade_date[cnt] < current_unix_stamp:
         cnt += 1
@@ -134,7 +144,13 @@ def get_stock_bar_daily():
         exists_code_list.append(doc['code'])
         exists_adjust_list.append(doc['adjust'])
         exists_market_list.append(doc['market'])
-        exists_update_ts_list.append(doc['maxStamp'])
+
+        update_ts = doc['maxStamp']
+        if doc['code'] in xrxd_code_list and doc['adjust'] == "qfq":
+            idx = xrxd_code_list.index(doc['code'])
+            if xrxd_ts_list[idx] > doc['maxStamp'] and current_unix_stamp-xrxd_ts_list[idx] >= 19*3600:
+                update_ts = trade_date[0]
+        exists_update_ts_list.append(update_ts)
 
     for code, market in zip(code_list, market_list):
         if code not in exists_code_list:
@@ -167,7 +183,7 @@ def get_stock_bar_daily():
     else:
         for iter in tqdm(iterable_args, total=len(code_list)):
             partial_process_bar_daily(iter)
-            break
+            # break
 
 
 if __name__ == '__main__':

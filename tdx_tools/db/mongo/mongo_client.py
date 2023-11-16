@@ -226,6 +226,22 @@ class MongoClient:
         print(f"Written {len(requests)} xrxds, matched {result.matched_count}, "f"modified {result.modified_count}.")
         return result
 
+    def find_xrxd_stocks(self) -> List[XRXD]:
+        """查找分红配股的股票
+
+        Returns:
+            List[XRXD]: 分红配股的股票
+        """
+        database = "stock"
+        collection = "xrxd"
+        col = self.__get_collection(database, collection)
+        cursor = col.find()
+        # cursor = cursor.sort("code", pymongo.ASCENDING)
+        stocks = []
+        for doc in cursor:
+            stocks.append(self.__doc_to_xrxd(doc))
+        return stocks
+
     def __get_collection(
         self,
         database: str,
@@ -270,6 +286,13 @@ class MongoClient:
         doc = self.__message_to_doc(xrxd)
         doc['_id'] = xrxd.code+":"+str(xrxd.date_ts)
         return doc
+
+    def __doc_to_xrxd(self, doc: Dict) -> XRXD:
+        _id = doc.pop('_id')
+        try:
+            return self.__doc_to_message(doc, XRXD)
+        except Exception as e:
+            raise ValueError(f"Failed to parse doc {_id}: {e}")
 
 
 if __name__ == '__main__':
