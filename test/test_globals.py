@@ -11,6 +11,7 @@ from tdx_tools.globals import singleton_instance
 
 def worker():
     print(singleton_instance)
+    print(singleton_instance.XRXD_DATE_LIST)
 
 
 if __name__ == '__main__':
