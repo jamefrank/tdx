@@ -8,7 +8,6 @@
 @License :   
 @Desc    :   分红配股信息查询
 refrence: https://data.eastmoney.com/yjfp/
-0930 0630 0331 1231
 '''
 
 import requests
