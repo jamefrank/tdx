@@ -21,3 +21,30 @@ def mesure_time(func):
         print(f"函数 {func.__name__} 的运行时间为：{execution_time:.6f} 毫秒")
         return result
     return wrapper
+
+
+class Singleton:
+    _instance = None
+    XRXD_DATE = [
+        '03-31',
+        '06-30',
+        '09-30',
+        '12-31'
+    ]
+
+    def __new__(cls):
+        """保证唯一性
+        """
+        if not cls._instance:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    @property
+    def XRXD_DATE_LIST(self):
+        return self.XRXD_DATE
+
+
+singleton_instance = Singleton()
+
+if __name__ == '__main__':
+    pass
