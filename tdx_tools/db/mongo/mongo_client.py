@@ -5,17 +5,18 @@
 # @Email:
 # @Description: mongodb 读写 接口
 
-from ast import Tuple
+
 from ctypes import Union
 from gc import collect
 from http import client
 from time import strftime
-from typing import Optional, Type
+from typing import Optional, Type, Tuple
 from urllib import request
 
 from tdx_tools.db.mongo.mongo_info import MongoDbInfo
 from tdx_tools.protos.stock_pb2 import Stock
 from tdx_tools.protos.bar_pb2 import Bar
+from tdx_tools.protos.xrxd_pb2 import XRXD
 
 import pymongo
 from pymongo import ReplaceOne
@@ -203,6 +204,28 @@ class MongoClient:
         result = col.aggregate(pipeline)
         return result
 
+    def write_xrxds(self, xrxds: List[XRXD]) -> BulkWriteResult:
+        """存储分红配股信息到 数据库
+        """
+        if not xrxds:
+            return None
+        requests = []
+        for xrxd in xrxds:
+            doc = self.__xrxd_to_doc(xrxd)
+            request = ReplaceOne(
+                filter={'_id': doc['_id']},
+                replacement=doc,
+                upsert=True
+            )
+            requests.append(request)
+
+        database = "stock"
+        collection = "xrxd"
+        col = self.__get_collection(database, collection)
+        result = col.bulk_write(requests)
+        print(f"Written {len(requests)} xrxds, matched {result.matched_count}, "f"modified {result.modified_count}.")
+        return result
+
     def __get_collection(
         self,
         database: str,
@@ -242,6 +265,11 @@ class MongoClient:
             return self.__doc_to_message(doc, Bar)
         except Exception as e:
             raise ValueError(f"Failed to parse doc {_id}: {e}")
+
+    def __xrxd_to_doc(self, xrxd: XRXD) -> Dict:
+        doc = self.__message_to_doc(xrxd)
+        doc['_id'] = xrxd.code+":"+str(xrxd.date_ts)
+        return doc
 
 
 if __name__ == '__main__':

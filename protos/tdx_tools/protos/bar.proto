@@ -9,6 +9,6 @@ message Bar{
     float low=6;
     float vol=7;
     float amount=8;
-    float timestamp=9;
+    float timestamp=9; 
     string adjust=10;
 }
