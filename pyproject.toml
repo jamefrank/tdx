@@ -14,6 +14,7 @@ include = ["tdx_tools"]
 
 [project.scripts]
 tdx-main = "tdx_tools.main:main"
+tdx-bars = "tdx_tools.datafeed_bar:get_stock_bar_daily"
 
 [tool.setuptools.dynamic]
 dependencies = { file = ["requirements.txt"] }

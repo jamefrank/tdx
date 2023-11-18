@@ -2,3 +2,4 @@ mypy-protobuf==3.2.0
 pymongo
 tqdm
 requests
+Ta-Lib
