@@ -6,3 +6,5 @@ requests
 pybind11-stubgen
 mypy_extensions
 mypy
+retry
+pytdx

@@ -1,8 +1,8 @@
 '''
 Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
 Date: 2024-11-28 22:18:08
-LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
-LastEditTime: 2024-11-28 22:30:54
+LastEditors: frank 13121950875@163.com
+LastEditTime: 2024-11-29 22:28:19
 FilePath: /tdx/tdx_tools/logger_config.py
 Description:  日志配置器
 
@@ -13,6 +13,7 @@ Copyright (c) 2024 by Frank, All Rights Reserved.
 
 import logging
 import os
+from pathlib import Path
 
 def setup_logger(name):
     # 创建日志记录器
@@ -21,7 +22,8 @@ def setup_logger(name):
 
     # 创建处理器
     stream_handler = logging.StreamHandler()
-    log_file_path = os.path.join(os.getcwd(), 'tdx.log')
+    CURRENT_FILE_DIR = Path(__file__).parent
+    log_file_path = CURRENT_FILE_DIR / "tdx.log"
     file_handler = logging.FileHandler(log_file_path)
 
     # 设置日志级别
