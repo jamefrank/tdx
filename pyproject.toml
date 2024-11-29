@@ -19,5 +19,9 @@ tdx-bars = "tdx_tools.datafeed_bar:get_stock_bar_daily"
 [tool.setuptools.dynamic]
 dependencies = { file = ["requirements.txt"] }
 
+[tool.mypy]
+plugins = ["mypy_extensions"]
+ignore_missing_imports = true
+
 [project.optional-dependencies]
 all = []

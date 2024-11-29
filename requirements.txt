@@ -3,3 +3,6 @@ pymongo
 tqdm
 requests
 # Ta-Lib
+pybind11-stubgen
+mypy_extensions
+mypy
